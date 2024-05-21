@@ -30,6 +30,8 @@ public class MemberService implements UserDetailsService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+
+    @Transactional
     public Long signup(MemberSignInRequest dto) {
         // 1. dto -> entity 변환
         // 2. repository의 save 메서드 호출
@@ -44,7 +46,7 @@ public class MemberService implements UserDetailsService {
     @Transactional
     public Map<String, Object> login(MemberLogInRequest dto) {
 
-        Optional<Member> optionalMember = memberRepository.findByName(dto.getMemberName());
+        Optional<Member> optionalMember = memberRepository.findByMemberName(dto.getMemberName());
 
         // name이 일치하는 Member가 없는 경우
         if (optionalMember.isEmpty()) {
@@ -91,7 +93,7 @@ public class MemberService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String memberName) throws UsernameNotFoundException {
-        Member member = memberRepository.findByName(memberName)
+        Member member = memberRepository.findByMemberName(memberName)
                 .orElseThrow(() -> new UsernameNotFoundException("해당 유저를 찾을 수 없습니다."));
 
         System.out.println("loadUserByUsername 유저 찾음: " + member);
