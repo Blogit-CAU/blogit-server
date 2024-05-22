@@ -1,6 +1,7 @@
 package com.blogit.blogitserver.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Setter
 @Getter
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "member")
 public class Member implements UserDetails {
     @Id // pk 지정
