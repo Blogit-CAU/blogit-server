@@ -2,6 +2,7 @@ package com.blogit.blogitserver.controller;
 
 import com.blogit.blogitserver.dto.request.ArticleRequest;
 import com.blogit.blogitserver.dto.response.ArticleResponse;
+import com.blogit.blogitserver.entity.Commit;
 import com.blogit.blogitserver.service.ArticleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,12 @@ public class ArticleController {
     public ResponseEntity<List<ArticleResponse>> getArticlesByUser(@PathVariable Long userId) {
         List<ArticleResponse> articles = articleService.getArticlesByUser(userId);
         return ResponseEntity.ok(articles);
+    }
+
+    @GetMapping("/user/{userId}/commits")
+    public ResponseEntity<List<Commit>> getCommitsByUser(@PathVariable Long userId) {
+        List<Commit> commits = articleService.getCommitsByUser(userId);
+        return ResponseEntity.ok(commits);
     }
 
     @PutMapping("/{articleId}")

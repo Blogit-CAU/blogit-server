@@ -3,7 +3,10 @@ package com.blogit.blogitserver.service;
 import com.blogit.blogitserver.dto.request.ArticleRequest;
 import com.blogit.blogitserver.dto.response.ArticleResponse;
 import com.blogit.blogitserver.entity.Article;
+import com.blogit.blogitserver.entity.ArticleCommitRelation;
+import com.blogit.blogitserver.entity.Commit;
 import com.blogit.blogitserver.entity.Member;
+import com.blogit.blogitserver.repository.ArticleCommitRelationRepository;
 import com.blogit.blogitserver.repository.ArticleRepository;
 import com.blogit.blogitserver.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,6 +26,7 @@ public class ArticleService {
 
     private final ArticleRepository articleRepository;
     private final MemberRepository memberRepository;
+    private final ArticleCommitRelationRepository relationRepository;
 
     @Transactional
     public Long createArticle(Long userId, ArticleRequest request) {
@@ -49,6 +54,21 @@ public class ArticleService {
         List<Article> articles = articleRepository.findByMember(member);
         return articles.stream()
                 .map(ArticleResponse::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<Commit> getCommitsByUser(Long userId) {
+        Optional<Member> userOpt = memberRepository.findById(userId);
+        if (userOpt.isEmpty()) {
+            throw new UsernameNotFoundException("해당 유저를 찾을 수 없습니다.");
+        }
+
+        Member member = userOpt.get();
+        List<Article> articles = articleRepository.findByMember(member);
+        List<ArticleCommitRelation> relations = relationRepository.findByArticleIn(articles);
+
+        return relations.stream()
+                .map(ArticleCommitRelation::getCommit)
                 .collect(Collectors.toList());
     }
 
