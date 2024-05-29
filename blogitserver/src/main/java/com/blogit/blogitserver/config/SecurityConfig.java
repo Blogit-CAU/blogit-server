@@ -5,6 +5,7 @@ import com.blogit.blogitserver.config.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -60,6 +61,11 @@ public class SecurityConfig {
                 .requestMatchers(new AntPathRequestMatcher("/signup")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/login")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/")).permitAll()
+                .requestMatchers(HttpMethod.GET,"/api/articles/{articleId}").permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/articles/user/{userId}")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/commits/all")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/commits/{id}")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/articles/user/{userId}/commits}")).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
